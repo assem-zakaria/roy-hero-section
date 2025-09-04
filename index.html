@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <title>Roy Hero Section Animation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Roy Hero Section Animation"/>
+</head>
+
+
+<body>
+
+        <!--  Required CSS  -->
+        <style type="text/css">
+
+            body {
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+                overflow-x: hidden;
+            }
+
+
+           
+
+        </style>
+
+        <!--  Required HTML Element  -->
+        <div id="roy-canvas-cont">
+
+            <canvas id="roy-canvas-el"></canvas>
+
+        </div>
+
+        <section class="dummy-section">Website Content</section>
+
+        <section class="dummy-section">Website Content</section>
+
+
+
+    <!-- Begin JavaScript Libraries Files -->
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/PixiPlugin.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/pixi-filters@latest/dist/browser/pixi-filters.min.js"></script>
+
+
+
+
+
+
+        
+
+    <!-- End JavaScript Libraries Files -->
+
+    <!-- Begin Animation JavaScript -->
+        <script type="text/javascript">
+            
+            (function () {
+
+                 const canvas = document.getElementById("roy-canvas-el");
+
+                    // Create App
+                    const app = new PIXI.Application({
+                        view: canvas,
+                        resizeTo: window,
+                        backgroundColor: 0xffffff,
+                    });
+
+                    // Sprite reference
+                    let sprite;
+
+                    const run = async () => {
+                        const texture = await PIXI.Assets.load("images/home grayscale pixeled.jpg"); // home normal // home grayscale pixeled
+                        sprite = new PIXI.Sprite(texture);
+
+                        // Anchor top-center
+                        sprite.anchor.set(0.5, 0);
+
+                        // Initial position
+                        sprite.x = app.renderer.width / 2;
+                        sprite.y = app.renderer.height / 2; // top of sprite = 50vh
+
+                        resizeSprite();
+                        app.stage.addChild(sprite);
+
+                        // Filters
+                        const asciiFilter = new PIXI.filters.AsciiFilter();
+                        asciiFilter.size = 10;
+
+                        const dotFilter = new PIXI.filters.DotFilter();
+                        dotFilter.scale = 5;
+                        dotFilter.angle = 3;
+
+                        const pixelateFilter = new PIXI.filters.PixelateFilter([5, 5]);
+
+                        const rgbSplitFilter = new PIXI.filters.RGBSplitFilter();
+                        rgbSplitFilter.red = new PIXI.Point(3, 0);
+                        rgbSplitFilter.green = new PIXI.Point(0, 0);
+                        rgbSplitFilter.blue = new PIXI.Point(-3, 0);
+
+                        const crtFilter = new PIXI.filters.CRTFilter({
+                            curvature: 15,
+                            lineWidth: 2.0,
+                            lineContrast: 0.25,
+                            verticalLine: false,
+                            noise: 0.2,
+                            noiseSize: 1.0,
+                            seed: Math.random(),
+                            vignetting: 0,
+                            vignettingAlpha: 1.0,
+                            vignettingBlur: 0.3,
+                            time: 0
+                        });
+
+                        // Apply filters
+                        sprite.filters = [dotFilter];
+
+                        // Animate filter
+                        gsap.to(dotFilter, {
+                            scale: 3,
+                            duration: 250,
+                            yoyo: true,
+                            repeat: -1,
+                            ease: "none"
+                        });
+                    };
+
+                    // Resize logic
+                    function resizeSprite() {
+                        if (!sprite) return;
+
+                        app.renderer.resize(window.innerWidth, window.innerHeight);
+
+                        const scaleX = app.renderer.width / sprite.texture.width;
+                        const scaleY = app.renderer.height / sprite.texture.height;
+
+                        // fit full width, maintain aspect ratio
+                        const scale = scaleX;
+
+                        sprite.scale.set(scale);
+
+                        // Center horizontally
+                        sprite.x = app.renderer.width / 2;
+
+                        // Top of sprite = 50vh
+                        sprite.y = app.renderer.height / 2;
+                    }
+
+                    window.addEventListener("resize", resizeSprite);
+
+                    let prevWidth = app.renderer.width;
+                    let prevHeight = app.renderer.height;
+
+                    app.ticker.add(() => {
+                        if (
+                            app.renderer.width !== prevWidth ||
+                            app.renderer.height !== prevHeight
+                        ) {
+                            resizeSprite();
+                            prevWidth = app.renderer.width;
+                            prevHeight = app.renderer.height;
+                        }
+                    });
+
+                    run();
+
+
+
+
+                    
+            })();
+        </script>
+    <!-- End Animation JavaScript -->
+
+</body>
+
+
+</html>
